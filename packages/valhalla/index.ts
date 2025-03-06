@@ -18,6 +18,7 @@ import {
     ValhallaCostingOptsAuto,
     ValhallaCostingOptsBicycle,
     ValhallaCostingOptsMotorcycle,
+    ValhallaCostingOptsMotorScooter,
     ValhallaCostingOptsPedestrian,
     ValhallaCostingOptsTruck,
     ValhallaCostingType,
@@ -86,6 +87,7 @@ interface ValhallaBaseOpts {
         | ValhallaCostingOptsBicycle
         | ValhallaCostingOptsMotorcycle
         | ValhallaCostingOptsPedestrian
+        | ValhallaCostingOptsMotorScooter
     /**
      * A set of locations to exclude or avoid within a route.
      */

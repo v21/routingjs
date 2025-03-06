@@ -684,6 +684,7 @@ interface ValhallaCostingOptTypes {
     bicycle?: ValhallaCostingOptsBicycle
     motorcycle?: ValhallaCostingOptsMotorcycle
     pedestrian?: ValhallaCostingOptsPedestrian
+    motorscooter?: ValhallaCostingOptsMotorScooter
 }
 
 interface ValhallaCostingOptsBase {
@@ -1160,6 +1161,75 @@ export interface ValhallaCostingOptsMotorcycle extends ValhallaCostingOptsAuto {
     use_trails?: boolean
 }
 
+export interface ValhallaCostingOptsMotorScooter
+    extends ValhallaCostingOptsAuto {
+    /**
+     * A riders's desire for adventure in their routes. This is a range of values from 0 to 1,
+     * where 0 will avoid trails, tracks, unclassified or bad surfaces and values towards 1 will
+     * tend to avoid major roads and route on secondary roads.
+     *
+     * @defaultValue
+     * The default value is 0.0.
+     */
+    use_trails?: boolean
+
+    /**
+     * Top speed the motorized scooter can go. Used to avoid roads with higher
+     * speeds than this value. For motor_scooter this value must be between 20
+     * and 120 KPH. The default value is 45 KPH (~28 MPH)
+     */
+    top_speed?: number
+
+    /**
+     * A rider's propensity to use primary roads. This is a range of values from
+     * 0 to 1, where 0 attempts to avoid primary roads, and 1 indicates the
+     * rider is more comfortable riding on primary roads. Based on the
+     * use_primary factor, roads with certain classifications and higher speeds
+     * are penalized in an attempt to avoid them when finding the best path.
+     *
+     * @defaultValue
+     * The default value is 0.5.
+     */
+    use_primary?: number
+
+    /**
+     * A rider's desire to tackle hills in their routes. This is a range of values
+     * from 0 to 1, where 0 attempts to avoid hills and steep grades even if it
+     * means a longer (time and distance) path, while 1 indicates the rider does not
+     * fear hills and steeper grades. Based on the use_hills factor, penalties are
+     * applied to roads based on elevation change and grade. These penalties help
+     * the path avoid hilly roads in favor of flatter roads or less steep grades
+     * where available. Note that it is not always possible to find alternate paths
+     * to avoid hills (for example when route locations are in mountainous areas)
+     *
+     * @defaultValue
+     * The default value is 0.5.
+     */
+    use_hills?: number
+
+    /**
+     * Changes the metric to quasi-shortest, i.e. purely distance-based costing.
+     * Note, this will disable all other costings & penalties. Also note,
+     * shortest will not disable hierarchy pruning, leading to potentially
+     * sub-optimal routes for some costing models.
+     *
+     * @defaultValue
+     * The default is false.
+     */
+    shortest?: boolean
+
+    /**
+     * Disable hierarchies to calculate the actual optimal route. Note: This
+     * could be quite a performance drainer so there is a upper limit of
+     * distance. If the upper limit is exceeded, this option will always be
+     * false.
+     *
+     * @defaultValue
+     * The default is false.
+     */
+    disable_hierarchy_pruning?: boolean
+}
+
 type ValhallaBicycleType =
     /** a road-style bicycle with narrow tires that is generally lightweight and designed for speed on paved surfaces.  */
     | "Road"
@@ -1304,6 +1374,14 @@ export type ValhallaCostingType =
      * favored, while steps or stairs and alleys are slightly avoided.
      */
     | "pedestrian"
+    /**
+     * Standard costing for travel by motor scooter or moped. By default,
+     * motor_scooter costing will avoid higher class roads unless the country
+     * overrides allows motor scooters on these roads. Motor scooter routes
+     * follow regular roads when needed, but avoid roads without motor_scooter,
+     * moped, or mofa access.
+     */
+    | "motor_scooter"
 
 export type ValhallaShapeMatch = "edge_walk" | "map_snap" | "walk_or_snap"
 interface ValhallaTraceOptions {
